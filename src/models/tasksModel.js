@@ -10,7 +10,7 @@ const dataSchema = mongoose.Schema({
     },
     status:{
         type: String,
-        default: "new"
+        default: "New"
     },
     email:{
         type: String

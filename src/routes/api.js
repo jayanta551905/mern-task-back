@@ -15,6 +15,7 @@ router.post("/createTask", auth, tasksController.createTask);
 router.get("/updateTaskStatus/:id/:status", auth, tasksController.updateTaskStatus);
 router.get("/listTaskByStatus/:status", auth, tasksController.listTaskByStatus);
 router.get("/taskStatusCount", auth, tasksController.taskStatusCount);
+router.get("/deleteTask/:id", auth, tasksController.deleteTask);
 
 
 module.exports=router;

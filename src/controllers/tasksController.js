@@ -20,10 +20,10 @@ exports.deleteTask = (req, res) => {
     let query = {_id:id};
     taskModel.remove(query, (err, data) => {
         if (err){
-            res.status(400).json({status: 'Fail', data: err});
+            res.status(400).json({status: 'fail', data: err});
         }
         else{
-            res.status(200).json({status: 'Success', data: data});
+            res.status(200).json({status: 'success', data: data});
         }
     })
 }

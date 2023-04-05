@@ -9,6 +9,7 @@ const router = express.Router();
 router.post("/registration", usersController.registration);
 router.post("/login", usersController.login);
 router.post("/profileUpdate",auth, usersController.profileUpdate);
+router.get("/profileDetails",auth, usersController.profileDetails);
 
 // task controllers api
 router.post("/createTask", auth, tasksController.createTask);

@@ -11,6 +11,8 @@ router.post("/login", usersController.login);
 router.post("/profileUpdate",auth, usersController.profileUpdate);
 router.get("/profileDetails",auth, usersController.profileDetails);
 
+router.get("/recoverVerifyEmail/:email", usersController.recoverVerifyEmail);
+
 // task controllers api
 router.post("/createTask", auth, tasksController.createTask);
 router.get("/updateTaskStatus/:id/:status", auth, tasksController.updateTaskStatus);

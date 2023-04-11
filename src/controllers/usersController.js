@@ -1,5 +1,7 @@
+const otpModel = require("../models/otpModel");
 const usersModel = require("../models/usersModel");
 const jwt = require("jsonwebtoken");
+const sendEmailUtility = require("../utility/sendEmailUtility");
 // registration
 exports.registration = (req, res) => {
     let reqBody = req.body;
@@ -74,4 +76,28 @@ exports.profileDetails=(req,res)=>{
             res.status(200).json({status:"success",data:data})
         }
     })
+}
+
+
+exports.recoverVerifyEmail=async (req,res)=>{
+    let email = req.params.email;
+    let OTPCode = Math.floor(100000 + Math.random() * 900000)
+    try {
+        // Email Account Query
+        let userCount = (await usersModel.aggregate([{$match: {email: email}}, {$count: "total"}]))
+        if(userCount.length>0){
+            // OTP Insert
+            let createOTP = await otpModel.create({email: email, otp: OTPCode})
+            // Email Send
+            let sendEmail = await sendEmailUtility(email,"Task Manager PIN Verification", "Your PIN Code is= "+OTPCode)
+            res.status(200).json({status: "success", data: sendEmail})
+        }
+        else{
+            res.status(200).json({status: "fail", data: "No User Found"})
+        }
+
+    }catch (e) {
+        res.status(200).json({status: "fail", data:e})
+    }
+
 }

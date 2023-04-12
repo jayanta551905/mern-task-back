@@ -11,7 +11,10 @@ router.post("/login", usersController.login);
 router.post("/profileUpdate",auth, usersController.profileUpdate);
 router.get("/profileDetails",auth, usersController.profileDetails);
 
+// password recovary api
 router.get("/recoverVerifyEmail/:email", usersController.recoverVerifyEmail);
+router.get("/reocovarVeryfiOTP/:email/:otp", usersController.reocovarVeryfiOTP);
+router.post("/recoverResetPass", usersController.recoverResetPass);
 
 // task controllers api
 router.post("/createTask", auth, tasksController.createTask);

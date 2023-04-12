@@ -81,15 +81,15 @@ exports.profileDetails=(req,res)=>{
 
 exports.recoverVerifyEmail=async (req,res)=>{
     let email = req.params.email;
-    let OTPCode = Math.floor(100000 + Math.random() * 900000)
+    let otpCode = Math.floor(100000 + Math.random() * 900000)
     try {
         // Email Account Query
-        let userCount = (await usersModel.aggregate([{$match: {email: email}}, {$count: "total"}]))
+        let userCount = await usersModel.aggregate([{$match: {email: email}}, {$count: "total"}])
         if(userCount.length>0){
             // OTP Insert
-            let createOTP = await otpModel.create({email: email, otp: OTPCode})
+            let createOTP = await otpModel.create({email: email, otp: otpCode})
             // Email Send
-            let sendEmail = await sendEmailUtility(email,"Task Manager PIN Verification", "Your PIN Code is= "+OTPCode)
+            let sendEmail = await sendEmailUtility(email,"Task Manager PIN Verification", "Your PIN Code is= "+otpCode)
             res.status(200).json({status: "success", data: sendEmail})
         }
         else{
@@ -100,4 +100,52 @@ exports.recoverVerifyEmail=async (req,res)=>{
         res.status(200).json({status: "fail", data:e})
     }
 
+}
+
+exports.reocovarVeryfiOTP = async (req, res) => {
+    let email = req.params.email;
+    let otpCode = req.params.otp;
+    let status = 0;
+    let statusUpdate = 1;
+
+    try{
+        let otpCount = await otpModel.aggregate([{$match: {email: email, otp: otpCode, status: status}}, {$count: "total"}])
+        if (otpCount.length>0) {
+            let otpUpdate = await otpModel.updateOne({email: email, otp: otpCode, status: status}, {
+                email: email,
+                otp: otpCode,
+                status: statusUpdate
+            })
+            res.status(200).json({status: "success", data: otpUpdate})
+        } else {
+            res.status(200).json({status: "fail", data: "Invalid OTP Code"})
+        }
+    }
+    catch (e) {
+        res.status(200).json({status: "fail", data:e})
+    }
+}
+
+
+exports.recoverResetPass=async (req,res)=>{
+
+    let email = req.body['email'];
+    let otpCode = req.body['OTP'];
+    let newPass =  req.body['password'];
+    let statusUpdate=1;
+
+    try {
+        let otpUsedCount = await otpModel.aggregate([{$match: {email: email, OTP: otpCode, status: statusUpdate}}, {$count: "total"}])
+        if (otpUsedCount.length>0) {
+            let passUpdate = await usersModel.updateOne({email: email}, {
+                password: newPass
+            })
+            res.status(200).json({status: "success", data: passUpdate})
+        } else {
+            res.status(200).json({status: "fail", data: "Invalid Request"})
+        }
+    }
+    catch (e) {
+        res.status(200).json({status: "fail", data:e})
+    }
 }
